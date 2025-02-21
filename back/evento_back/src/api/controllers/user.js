@@ -100,6 +100,24 @@ const updateUserRole = async (req, res, next) => {
     return res.status(400).json(error.status)
   }
 }
+const removeEventFromUser = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const { eventId } = req.body
+
+    if (!eventId) {
+      return res.status(400).json('eventId es obligatorio')
+    }
+    const userUpdated = await User.findByIdAndUpdate(id, { $pull: { events: eventId } }, { new: true })
+
+    if (!userUpdated) {
+      return res.status(404).json('usuario no encontrado')
+    }
+    return res.status(200).json(userUpdated)
+  } catch (error) {
+    return res.status(500).json('error con el servidor')
+  }
+}
 
 const deleteUser = async (req, res, next) => {
   try {
@@ -115,4 +133,4 @@ const deleteUser = async (req, res, next) => {
   }
 }
 
-module.exports = { getUsers, login, register, updateUserRole, deleteUser, updateUser, getUserById }
+module.exports = { getUsers, login, register, updateUserRole, deleteUser, updateUser, getUserById, removeEventFromUser }

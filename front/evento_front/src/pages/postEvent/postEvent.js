@@ -1,4 +1,6 @@
+import { Home } from '../Home/Home'
 import { myEvents } from '../myEvents/myEvents'
+import { registerForm } from '../Register/Register'
 import './postEvent.css'
 
 export const postEvent = () => {
@@ -13,30 +15,51 @@ export const postEvent = () => {
 const publish = (mainElement) => {
   const form = document.createElement('form')
   form.innerHTML = ''
-  const title = document.createElement('input')
-  const date = document.createElement('input')
-  const description = document.createElement('input')
-  const image = document.createElement('input')
-  const publishButton = document.createElement('button')
-  const accountNeedP = document.createElement('p')
-  const accountNeedRegister = document.createElement('a')
+  const div = document.createElement('div')
+  const userLoggedIn = localStorage.getItem('token')
+  if (userLoggedIn) {
+    const publicar = document.createElement('h2')
+    const title = document.createElement('input')
+    const date = document.createElement('input')
+    const description = document.createElement('input')
+    const image = document.createElement('input')
+    const publishButton = document.createElement('button')
+    publicar.textContent = 'PUBLICAR'
+    title.placeholder = 'event title'
+    date.placeholder = 'event date'
+    date.type = 'date'
+    image.type = 'file'
+    description.placeholder = 'event description'
+    publishButton.textContent = 'Publicar'
+    form.append(publicar, title, date, description, image, publishButton)
 
-  title.placeholder = 'event title'
-  date.placeholder = 'event date'
-  image.type = 'file'
-  description.placeholder = 'event description'
-  publishButton.textContent = 'Publicar'
-  accountNeedP.textContent = `Necesitas hacer login para publicar `
-  accountNeedRegister.textContent = 'Login'
+    form.addEventListener('submit', () => {
+      submit(title.value, date.value, description.value, image.files[0], form)
+    })
+  } else {
+    const accountNeedP = document.createElement('p')
+    const accountNeedRegister = document.createElement('a')
+    accountNeedP.textContent = `Necesitas hacer login para publicar  `
+    accountNeedRegister.textContent = 'Login'
+    accountNeedRegister.href = '#'
+    div.append(accountNeedP)
+    accountNeedRegister.addEventListener('click', (event) => {
+      event.preventDefault()
+      registerForm()
+    })
+    accountNeedP.append(accountNeedRegister)
+  }
 
-  form.append(title, date, description, image, publishButton, accountNeedP, accountNeedRegister)
-  form.addEventListener('submit', () => {
-    submit(title.value, date.value, description.value, image.files[0], form)
-  })
   mainElement.append(form)
+  mainElement.append(div)
 }
 
 const submit = async (title, date, description, image, form) => {
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+  if (!dateRegex.test(date)) {
+    alert('Por favor, introduce una fecha válida en formato YYYY-MM-DD.')
+    return
+  }
   const formData = new FormData()
   formData.append('titulo', title)
   formData.append('fecha', date)

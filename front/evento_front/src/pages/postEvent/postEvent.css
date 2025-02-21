@@ -3,6 +3,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 2em;
-  height: 80svh;
+  margin-top: 10em;
+  gap: 3em;
+  width: 100%;
+}
+
+#postEvent > div {
+  margin-top: 10em;
 }

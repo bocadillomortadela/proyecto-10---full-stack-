@@ -1,3 +1,4 @@
+import { myEvents } from '../myEvents/myEvents'
 import './Home.css'
 
 export const Home = async () => {
@@ -22,15 +23,17 @@ export const createEvent = (events, mainElement) => {
     const image = document.createElement('img')
     const like = document.createElement('img')
     const likeDescription = document.createElement('p')
-    likeDescription.textContent = 'Confirmar asistencia'
     like.className = 'like'
 
     if (user && user.events) {
-      like.addEventListener('click', () => addAsistentes(event._id))
+      like.addEventListener('click', () => {
+        if (user.events.includes(event._id)) {
+          removeAsistentes(event._id)
+        } else {
+          addAsistentes(event._id)
+        }
+      })
       like.src = user.events.includes(event._id) ? '/assets/accept.png' : '/assets/dry-clean.png'
-    } else {
-      like.src = '/assets/dry-clean.png'
-      like.style.cursor = 'not-allowed'
     }
 
     eventDiv.className = 'event'
@@ -63,5 +66,29 @@ const addAsistentes = async (eventId) => {
   const res = await fetch(`http://localhost:3000/api/v1/users/${user._id}`, options)
   const response = await res.json()
   localStorage.setItem('user', JSON.stringify(user))
-  Home()
+
+  myEvents()
+}
+
+const removeAsistentes = async (eventId) => {
+  const user = JSON.parse(localStorage.getItem('user'))
+
+  user.events = user.events.filter((id) => id !== eventId)
+
+  const finalObject = JSON.stringify({
+    eventId
+  })
+
+  const options = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    },
+    body: finalObject
+  }
+  const res = await fetch(`http://localhost:3000/api/v1/users/removeEvent/${user._id}`, options)
+  const response = await res.json()
+  localStorage.setItem('user', JSON.stringify(user))
+  myEvents()
 }

@@ -14,6 +14,7 @@ export const registerForm = () => {
 }
 
 const register = (mainElement) => {
+  const registerText = document.createElement('h2')
   const form = document.createElement('form')
   const email = document.createElement('input')
   const inputUserName = document.createElement('input')
@@ -21,6 +22,7 @@ const register = (mainElement) => {
   const button = document.createElement('button')
   const backtoLogin = document.createElement('a')
 
+  registerText.textContent = 'REGISTER'
   email.placeholder = 'email'
   inputUserName.placeholder = 'username'
   inputPass.placeholder = '******'
@@ -29,7 +31,7 @@ const register = (mainElement) => {
   backtoLogin.textContent = 'Volver a login'
   backtoLogin.href = '#'
 
-  form.append(email, inputUserName, inputPass, button, backtoLogin)
+  form.append(registerText, email, inputUserName, inputPass, button, backtoLogin)
 
   form.addEventListener('submit', () => {
     submit(email.value, inputUserName.value, inputPass.value)
@@ -42,6 +44,11 @@ const register = (mainElement) => {
 }
 
 const submit = async (email, userName, password) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email)) {
+    alert('Por favor, introduce un email válido.')
+    return
+  }
   const finalObject = JSON.stringify({
     email,
     userName,
@@ -62,4 +69,5 @@ const submit = async (email, userName, password) => {
   localStorage.setItem('user', JSON.stringify(finalRes))
   LoginRegister()
   Header()
+  Home()
 }

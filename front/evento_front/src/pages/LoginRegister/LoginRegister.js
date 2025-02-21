@@ -16,6 +16,7 @@ export const LoginRegister = () => {
 }
 
 const login = (mainElement) => {
+  const LoginText = document.createElement('h2')
   const form = document.createElement('form')
   const input = document.createElement('input')
   const inputpass = document.createElement('input')
@@ -23,6 +24,7 @@ const login = (mainElement) => {
   const p = document.createElement('p')
   const registerLink = document.createElement('a')
 
+  LoginText.textContent = 'LOGIN'
   p.textContent = `No tienes cuenta? `
   registerLink.textContent = 'Registrarse'
   registerLink.href = '#'
@@ -34,6 +36,7 @@ const login = (mainElement) => {
   mainElement.append(form)
 
   p.append(registerLink)
+  form.append(LoginText)
   form.append(input)
   form.append(inputpass)
   form.append(button)
