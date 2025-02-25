@@ -13,12 +13,14 @@ const getEvents = async (req, res, next) => {
 const postEvent = async (req, res, next) => {
   try {
     const { titulo, fecha, descripcion } = req.body
+    const userId = req.user.id
     const imagePath = req.file.path
     const newEvent = await Event.create({
       titulo,
       fecha,
       descripcion,
-      image: imagePath
+      image: imagePath,
+      creator: userId
     })
     return res.status(201).json(newEvent)
   } catch (error) {

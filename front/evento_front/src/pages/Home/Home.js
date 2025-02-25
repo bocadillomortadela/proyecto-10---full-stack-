@@ -1,3 +1,4 @@
+import { deleteAnEvent } from '../deleteAnEvent/deleteAnEvent'
 import { myEvents } from '../myEvents/myEvents'
 import './Home.css'
 
@@ -22,8 +23,9 @@ export const createEvent = (events, mainElement) => {
     const description = document.createElement('p')
     const image = document.createElement('img')
     const like = document.createElement('img')
-    const likeDescription = document.createElement('p')
     like.className = 'like'
+    const deleteEventButton = document.createElement('button')
+    deleteEventButton.textContent = 'Eliminar evento'
 
     if (user && user.events) {
       like.addEventListener('click', () => {
@@ -42,7 +44,16 @@ export const createEvent = (events, mainElement) => {
     description.textContent = event.descripcion
     image.src = event.image
 
-    eventDiv.append(title, date, description, image, like, likeDescription)
+    eventDiv.append(title, date, description, image, like)
+
+    if (user && user._id === event.creator) {
+      deleteEventButton.addEventListener('click', () => {
+        deleteAnEvent(event._id)
+      })
+      eventDiv.append(deleteEventButton)
+    } else {
+      deleteEventButton.style.display = 'none'
+    }
     mainElement.append(eventDiv)
   }
 }

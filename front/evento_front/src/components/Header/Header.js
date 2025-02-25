@@ -1,3 +1,4 @@
+import { deleteUser } from '../../pages/deleteUser/deleteUser'
 import { Home } from '../../pages/Home/Home'
 import { LoginRegister } from '../../pages/LoginRegister/LoginRegister'
 import { myEvents } from '../../pages/myEvents/myEvents'
@@ -54,6 +55,19 @@ export const Header = () => {
       }
     }
     nav.append(a)
+  }
+  if (localStorage.getItem('token')) {
+    const deleteAccountBtn = document.createElement('button')
+    deleteAccountBtn.textContent = 'Eliminar Cuenta'
+    deleteAccountBtn.className = 'delete-account-btn'
+
+    deleteAccountBtn.addEventListener('click', async () => {
+      const confirmDelete = confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')
+      if (confirmDelete) {
+        deleteUser()
+      }
+    })
+    nav.append(deleteAccountBtn)
   }
   header.append(nav)
 }

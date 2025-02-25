@@ -3,3 +3,19 @@ nav {
   width: 100%;
   justify-content: space-around;
 }
+
+nav > a:hover {
+  transform: scale(1.1);
+}
+.delete-account-btn {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.delete-account-btn:hover {
+  transform: scale(1.1);
+}
