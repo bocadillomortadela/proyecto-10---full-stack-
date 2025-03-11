@@ -21,6 +21,7 @@ const register = (mainElement) => {
   const inputPass = document.createElement('input')
   const button = document.createElement('button')
   const backtoLogin = document.createElement('a')
+  const errorMsg = document.createElement('p')
 
   registerText.textContent = 'REGISTER'
   email.placeholder = 'email'
@@ -30,11 +31,14 @@ const register = (mainElement) => {
   button.textContent = 'Register'
   backtoLogin.textContent = 'Volver a login'
   backtoLogin.href = '#'
+  errorMsg.style.color = 'red'
+  errorMsg.style.display = 'none'
 
-  form.append(registerText, email, inputUserName, inputPass, button, backtoLogin)
+  form.append(registerText, email, errorMsg, inputUserName, inputPass, button, backtoLogin)
 
-  form.addEventListener('submit', () => {
-    submit(email.value, inputUserName.value, inputPass.value)
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault()
+    await submit(email.value, inputUserName.value, inputPass.value, errorMsg)
   })
   backtoLogin.addEventListener('click', () => {
     LoginRegister()
@@ -65,9 +69,16 @@ const submit = async (email, userName, password) => {
   const res = await fetch('http://localhost:3000/api/v1/users/register', options)
   const finalRes = await res.json()
   console.log(finalRes)
+
+  if (typeof finalRes === 'string' && finalRes.toLowerCase().includes('user already exists')) {
+    alert('El usuario ya existe. Prueba con otro email o usuario.')
+    return
+  }
+
   localStorage.setItem('token', finalRes.token)
-  localStorage.setItem('user', JSON.stringify(finalRes))
-  LoginRegister()
+  localStorage.setItem('user', JSON.stringify(finalRes.user))
+
   Header()
+  LoginRegister()
   Home()
 }

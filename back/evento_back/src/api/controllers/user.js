@@ -38,7 +38,8 @@ const register = async (req, res, next) => {
     })
 
     const user = await newUser.save()
-    return res.status(201).json(user)
+    const token = generateToken(user._id)
+    return res.status(201).json({ user, token })
   } catch (error) {
     return res.status(400).json({ error: error.message })
   }

@@ -1,3 +1,4 @@
+import { loader } from '../../components/loader/loader'
 import { deleteAnEvent } from '../deleteAnEvent/deleteAnEvent'
 import { myEvents } from '../myEvents/myEvents'
 import './Home.css'
@@ -6,11 +7,18 @@ export const Home = async () => {
   const main = document.querySelector('main')
   main.innerHTML = ''
   main.className = 'main-container'
-  const res = await fetch('http://localhost:3000/api/v1/event')
-  const event = await res.json()
-  console.log(event)
+  const loading = loader()
+  main.appendChild(loading)
+  try {
+    const res = await fetch('http://localhost:3000/api/v1/event')
+    const event = await res.json()
+    console.log(event)
 
-  createEvent(event, main)
+    loading.remove()
+    createEvent(event, main)
+  } catch (error) {
+    loading.remove()
+  }
 }
 
 export const createEvent = (events, mainElement) => {
@@ -75,6 +83,9 @@ const addAsistentes = async (eventId) => {
     body: finalObject
   }
   const res = await fetch(`http://localhost:3000/api/v1/users/${user._id}`, options)
+
+  console.log(res)
+
   const response = await res.json()
   localStorage.setItem('user', JSON.stringify(user))
 

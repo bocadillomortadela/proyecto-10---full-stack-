@@ -21,6 +21,7 @@ export const myEvents = async () => {
   main.append(message)
 
   const res = await fetch(`http://localhost:3000/api/v1/users/${user._id}`)
+  console.log(res)
 
   const userId = await res.json()
 

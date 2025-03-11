@@ -1,3 +1,4 @@
+import { loader } from '../../components/loader/loader'
 import { Home } from '../Home/Home'
 import { myEvents } from '../myEvents/myEvents'
 import { registerForm } from '../Register/Register'
@@ -8,6 +9,7 @@ export const postEvent = () => {
   main.textContent = ''
   const postEventDiv = document.createElement('div')
   postEventDiv.id = 'postEvent'
+
   publish(postEventDiv)
   main.append(postEventDiv)
 }
@@ -31,6 +33,10 @@ const publish = (mainElement) => {
     image.type = 'file'
     description.placeholder = 'event description'
     publishButton.textContent = 'Publicar'
+    const today = new Date().toISOString().split('T')[0]
+    date.type = 'date'
+    date.placeholder = 'Event date'
+    date.min = today
     form.append(publicar, title, date, description, image, publishButton)
 
     form.addEventListener('submit', () => {
@@ -60,6 +66,15 @@ const submit = async (title, date, description, image, form) => {
     alert('Por favor, introduce una fecha válida en formato YYYY-MM-DD.')
     return
   }
+  const main = document.querySelector('main')
+
+  form.style.display = 'none'
+  const loading = loader()
+  loading.style.display = 'flex'
+  loading.style.justifyContent = 'center'
+  loading.style.alignItems = 'center'
+  main.appendChild(loading)
+
   const formData = new FormData()
   formData.append('titulo', title)
   formData.append('fecha', date)
@@ -73,21 +88,27 @@ const submit = async (title, date, description, image, form) => {
       Authorization: `Bearer ${token}`
     }
   }
-
-  const res = await fetch('http://localhost:3000/api/v1/event/', options)
-  const existingError = form.querySelector('.error')
-  if (existingError) {
-    existingError.remove()
+  try {
+    const res = await fetch('http://localhost:3000/api/v1/event/', options)
+    loading.remove()
+    const existingError = form.querySelector('.error')
+    if (existingError) {
+      existingError.remove()
+    }
+    if (res.status === 400) {
+      const errorMessage = document.createElement('p')
+      errorMessage.classList.add('error')
+      errorMessage.textContent = 'not authorized'
+      errorMessage.style = 'color: red'
+      form.append(errorMessage)
+      return
+    }
+    const finalres = await res.json()
+    console.log(finalres)
+    Home()
+  } catch (error) {
+    loading.remove()
+    form.style.display = 'block'
+    alert('Hubo un error al publicar el evento. Inténtalo de nuevo.')
   }
-  if (res.status === 400) {
-    const errorMessage = document.createElement('p')
-    errorMessage.classList.add('error')
-    errorMessage.textContent = 'not authorized'
-    errorMessage.style = 'color: red'
-    form.append(errorMessage)
-    return
-  }
-  const finalres = await res.json()
-  console.log(finalres)
-  Home()
 }
