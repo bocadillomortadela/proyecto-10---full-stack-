@@ -1,4 +1,5 @@
 const { User } = require('../api/models/user')
+const { Event } = require('../api/models/event')
 const { verifyToken } = require('../utils/jwt')
 
 const isAuth = async (req, res, next) => {
@@ -34,5 +35,22 @@ const isAdmin = async (req, res, next) => {
     return res.status(400).json('No estás autorizado')
   }
 }
+
+// const isAdminOrCreator = async (req, res, next) => {
+//   try {
+//     console.log('Usuario:', req.user)
+//     const { id } = req.params
+//     console.log('ID evento:', id)
+//     const event = await Event.findById(id)
+//     const isCreator = req.user._id.toString() === event.creator.toString()
+//     const isAdmin = req.user.rol === 'admin'
+//     if (!isCreator && !isAdmin) {
+//       return res.status(403).json({ message: 'No tienes permisos para eliminar este evento' })
+//     }
+//     next()
+//   } catch (error) {
+//     return res.status(400).json({ message: 'Error al verificar pssermisos', error: error.message })
+//   }
+// }
 
 module.exports = { isAuth, isAdmin }

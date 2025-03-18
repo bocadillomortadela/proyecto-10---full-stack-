@@ -1,5 +1,6 @@
 import { loader } from '../../components/loader/loader'
 import { Home } from '../Home/Home'
+import { LoginRegister } from '../LoginRegister/LoginRegister'
 import { myEvents } from '../myEvents/myEvents'
 import { registerForm } from '../Register/Register'
 import './postEvent.css'
@@ -51,7 +52,7 @@ const publish = (mainElement) => {
     div.append(accountNeedP)
     accountNeedRegister.addEventListener('click', (event) => {
       event.preventDefault()
-      registerForm()
+      LoginRegister()
     })
     accountNeedP.append(accountNeedRegister)
   }

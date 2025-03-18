@@ -1,3 +1,4 @@
+import { apiFetch } from '../../components/apiFetch/apiFetch'
 import { Home } from '../Home/Home'
 
 export const deleteAnEvent = async (eventId) => {
@@ -12,12 +13,17 @@ export const deleteAnEvent = async (eventId) => {
       Authorization: `Bearer ${localStorage.getItem('token')}`
     }
   }
-  const res = await fetch(`http://localhost:3000/api/v1/event/delete/${eventId}`, options)
-  const response = await res.json()
-  console.log(response)
 
-  if (res.ok) {
-    alert('se ha eliminado')
+  try {
+    const data = await apiFetch(`event/delete/${eventId}`, options)
+    if (!data.ok) {
+      alert(data)
+    } else {
+      alert('se ha eliminado')
+    }
+
     Home()
+  } catch (error) {
+    alert('Error al intentar eliminar el evento o no tienes permiso.')
   }
 }

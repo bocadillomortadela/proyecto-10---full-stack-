@@ -23,6 +23,7 @@ export const Home = async () => {
 
 export const createEvent = (events, mainElement) => {
   const user = JSON.parse(localStorage.getItem('user')) || null
+
   for (const event of events) {
     const eventDiv = document.createElement('div')
     const title = document.createElement('h3')
@@ -54,7 +55,7 @@ export const createEvent = (events, mainElement) => {
 
     eventDiv.append(title, date, description, image, like)
 
-    if (user && user._id === event.creator) {
+    if ((user && user._id === event.creator) || user.rol === 'admin') {
       deleteEventButton.addEventListener('click', () => {
         deleteAnEvent(event._id)
       })
