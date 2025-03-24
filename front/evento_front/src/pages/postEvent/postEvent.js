@@ -1,3 +1,4 @@
+import { apiFetch } from '../../components/apiFetch/apiFetch'
 import { loader } from '../../components/loader/loader'
 import { Home } from '../Home/Home'
 import { LoginRegister } from '../LoginRegister/LoginRegister'
@@ -90,7 +91,7 @@ const submit = async (title, date, description, image, form) => {
     }
   }
   try {
-    const res = await fetch('http://localhost:3000/api/v1/event/', options)
+    const res = await apiFetch('event/', options)
     loading.remove()
     const existingError = form.querySelector('.error')
     if (existingError) {
@@ -104,8 +105,6 @@ const submit = async (title, date, description, image, form) => {
       form.append(errorMessage)
       return
     }
-    const finalres = await res.json()
-    console.log(finalres)
     Home()
   } catch (error) {
     loading.remove()

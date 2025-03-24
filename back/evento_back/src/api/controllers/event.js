@@ -53,10 +53,24 @@ const updateEvent = async (req, res, next) => {
 const deleteEvent = async (req, res, next) => {
   try {
     const { id } = req.params
-    const event = await Event.findByIdAndDelete(id)
-    return res.status(200).json({ eventoEliminado: event })
+    const userId = req.user._id
+    const userRole = req.user.rol
+
+    const event = await Event.findById(id)
+
+    if (!event) {
+      return res.status(404).json({ message: 'Evento no encontrado' })
+    }
+
+    if (event.creator.toString() !== userId.toString() && userRole !== 'admin') {
+      return res.status(403).json({ message: 'No tienes permiso para eliminar este evento' })
+    }
+
+    await Event.findByIdAndDelete(id)
+
+    return res.status(200).json({ message: 'Evento eliminado correctamente' })
   } catch (error) {
-    return res.status(400).json('error')
+    return res.status(500).json({ message: 'Error al intentar eliminar el evento' })
   }
 }
 

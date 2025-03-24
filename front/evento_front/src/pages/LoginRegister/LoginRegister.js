@@ -1,3 +1,4 @@
+import { apiFetch } from '../../components/apiFetch/apiFetch'
 import { Header } from '../../components/Header/Header'
 import { Home } from '../Home/Home'
 import { registerForm } from '../Register/Register'
@@ -66,7 +67,7 @@ const submit = async (userName, password, form) => {
       'content-Type': 'application/json'
     }
   }
-  const res = await fetch('http://localhost:3000/api/v1/users/login', options)
+  const res = await apiFetch('users/login', options)
 
   if (res.status === 400) {
     const errorMessage = document.createElement('p')
@@ -80,9 +81,9 @@ const submit = async (userName, password, form) => {
   if (errorMessage) {
     errorMessage.remove()
   }
-  const finalResponse = await res.json()
-  localStorage.setItem('token', finalResponse.token)
-  localStorage.setItem('user', JSON.stringify(finalResponse.user))
+
+  localStorage.setItem('token', res.token)
+  localStorage.setItem('user', JSON.stringify(res.user))
   Home()
   Header()
 }

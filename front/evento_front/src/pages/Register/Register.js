@@ -1,3 +1,4 @@
+import { apiFetch } from '../../components/apiFetch/apiFetch'
 import { Header } from '../../components/Header/Header'
 import { Home } from '../Home/Home'
 import { LoginRegister } from '../LoginRegister/LoginRegister'
@@ -66,19 +67,20 @@ const submit = async (email, userName, password) => {
       'content-Type': 'application/json'
     }
   }
-  const res = await fetch('http://localhost:3000/api/v1/users/register', options)
-  const finalRes = await res.json()
-  console.log(finalRes)
 
-  if (typeof finalRes === 'string' && finalRes.toLowerCase().includes('user already exists')) {
-    alert('El usuario ya existe. Prueba con otro email o usuario.')
-    return
+  try {
+    const res = await apiFetch(`users/register`, options)
+    if (typeof res === 'string' && res.toLowerCase().includes('user already exists')) {
+      alert('El usuario ya existe. Prueba con otro email o usuario.')
+      return
+    }
+    localStorage.setItem('token', res.token)
+    localStorage.setItem('user', JSON.stringify(res.user))
+    Header()
+    LoginRegister()
+    Home()
+  } catch (error) {
+    console.error('Error en el registro:', error)
+    alert('Hubo un problema al registrarte. Inténtalo de nuevo.')
   }
-
-  localStorage.setItem('token', finalRes.token)
-  localStorage.setItem('user', JSON.stringify(finalRes.user))
-
-  Header()
-  LoginRegister()
-  Home()
 }

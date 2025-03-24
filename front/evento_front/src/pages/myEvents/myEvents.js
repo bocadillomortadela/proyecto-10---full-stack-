@@ -1,3 +1,4 @@
+import { apiFetch } from '../../components/apiFetch/apiFetch'
 import { createEvent, Home } from '../Home/Home'
 import './myEvents.css'
 
@@ -19,14 +20,15 @@ export const myEvents = async () => {
 
   message.append(addEventP)
   main.append(message)
+  try {
+    const res = await apiFetch(`users/${user._id}`)
+    console.log(res)
 
-  const res = await fetch(`http://localhost:3000/api/v1/users/${user._id}`)
-  console.log(res)
-
-  const userId = await res.json()
-
-  if (userId.events.length > 0) {
-    message.style.display = 'none'
-    createEvent(userId.events, main)
+    if (res.events.length > 0) {
+      message.style.display = 'none'
+      createEvent(res.events, main)
+    }
+  } catch (error) {
+    alert('Hubo un problema al ver eventos.')
   }
 }

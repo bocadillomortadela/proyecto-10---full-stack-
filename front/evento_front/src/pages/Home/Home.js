@@ -1,21 +1,29 @@
+import { apiFetch } from '../../components/apiFetch/apiFetch'
 import { loader } from '../../components/loader/loader'
 import { deleteAnEvent } from '../deleteAnEvent/deleteAnEvent'
 import { myEvents } from '../myEvents/myEvents'
 import './Home.css'
 
 export const Home = async () => {
+  const user = JSON.parse(localStorage.getItem('user'))
   const main = document.querySelector('main')
   main.innerHTML = ''
   main.className = 'main-container'
   const loading = loader()
   main.appendChild(loading)
+
   try {
-    const res = await fetch('http://localhost:3000/api/v1/event')
-    const event = await res.json()
+    const event = await apiFetch('event')
     console.log(event)
 
     loading.remove()
-    createEvent(event, main)
+    if (!user) {
+      const mensaje = document.createElement('p')
+      mensaje.textContent = 'inicia sesión para ver los eventos'
+      main.append(mensaje)
+    } else {
+      createEvent(event, main)
+    }
   } catch (error) {
     loading.remove()
   }
@@ -83,14 +91,14 @@ const addAsistentes = async (eventId) => {
     },
     body: finalObject
   }
-  const res = await fetch(`http://localhost:3000/api/v1/users/${user._id}`, options)
-
-  console.log(res)
-
-  const response = await res.json()
-  localStorage.setItem('user', JSON.stringify(user))
-
-  myEvents()
+  try {
+    const res = await apiFetch(`users/${user._id}`, options)
+    console.log(res)
+    localStorage.setItem('user', JSON.stringify(user))
+    myEvents()
+  } catch (error) {
+    console.error('Error al añadir asistente:', error)
+  }
 }
 
 const removeAsistentes = async (eventId) => {
@@ -110,8 +118,11 @@ const removeAsistentes = async (eventId) => {
     },
     body: finalObject
   }
-  const res = await fetch(`http://localhost:3000/api/v1/users/removeEvent/${user._id}`, options)
-  const response = await res.json()
-  localStorage.setItem('user', JSON.stringify(user))
-  myEvents()
+  try {
+    const res = await apiFetch(`users/removeEvent/${user._id}`, options)
+    localStorage.setItem('user', JSON.stringify(user))
+    myEvents()
+  } catch (error) {
+    console.error('Error al remover asistente:', error)
+  }
 }

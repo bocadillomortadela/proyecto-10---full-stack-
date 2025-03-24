@@ -1,3 +1,4 @@
+import { apiFetch } from '../../components/apiFetch/apiFetch'
 import { Header } from '../../components/Header/Header'
 
 export const deleteUser = async () => {
@@ -9,11 +10,13 @@ export const deleteUser = async () => {
       Authorization: `Bearer ${localStorage.getItem('token')}`
     }
   }
-  const res = await fetch(`http://localhost:3000/api/v1/users/delete/${user._id}`, options)
-  if (res.ok) {
-    alert('eliminado correctamente')
-    console.log(`eliminado correctamente`)
+  const res = await apiFetch(`users/delete/${user._id}`, options)
+  if (res === 'user deleted') {
+    alert('Eliminado correctamente')
+    console.log('Eliminado correctamente')
     localStorage.clear()
     Header()
+  } else {
+    alert('Error al eliminar el usuario')
   }
 }
